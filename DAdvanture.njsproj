@@ -31,24 +31,40 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="controllers\authController.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="controllers\bookingcontroller.js" />
     <Compile Include="controllers\errorController.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="controllers\handlerFactory.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="controllers\reviewController.js" />
+    <Compile Include="controllers\tripController.js" />
+    <Compile Include="controllers\userController.js" />
     <Compile Include="models\bookingModel.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="models\reviewModel.js" />
     <Compile Include="models\tripModel.js" />
     <Compile Include="models\userModel.js" />
+    <Compile Include="routes\bookingRoutes.js" />
+    <Compile Include="routes\reviewRoutes.js" />
+    <Compile Include="routes\tripRoutes.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="routes\userRoutes.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="server.js" />
     <Compile Include="utils\apiFeatures.js" />
     <Compile Include="utils\appError.js" />
     <Compile Include="utils\catchAsync.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\email.js" />
     <Content Include="config.env" />
     <Content Include="package.json" />
     <Content Include="public\images\favicon.ico" />
@@ -61,6 +77,7 @@
   <ItemGroup>
     <Folder Include="controllers\" />
     <Folder Include="models\" />
+    <Folder Include="public\images\users\" />
     <Folder Include="utils\" />
     <Folder Include="public\" />
     <Folder Include="public\images\" />

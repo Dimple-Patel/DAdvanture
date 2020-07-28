@@ -13,6 +13,11 @@ const hpp = require('hpp');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
+const userRouter = require('./routes/userRoutes');
+const tripRouter = require('./routes/tripRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
+const bookingrouter = require('./routes/bookingRoutes');
+
 const app = express();
 
 // view engine setup
@@ -64,6 +69,12 @@ app.use(
         ]
     })
 );
+
+//mounting routers to the route
+app.use('/api/users', userRouter);
+app.use('/api/trips', tripRouter);
+app.use('/api/reciews', reviewRouter);
+app.use('/api/bookings', bookingrouter);
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
