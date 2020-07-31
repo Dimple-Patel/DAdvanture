@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/signup', authController.signUp);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
-router.post('/forgotPassword', authController.forgoPassword);
+router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:resetToken', authController.resetPassword);
 
 //Protect all routes after this middleware
@@ -27,4 +27,5 @@ router.route('/:id')
     .patch(userController.updateUser)
     .delete(userController.deleteUser);
 
+//export router to serve all request for user routes
 module.exports = router;

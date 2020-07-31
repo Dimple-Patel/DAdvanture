@@ -5,5 +5,7 @@
 //use this promise to avoid overhead of try..catch block and it will automatically catch both synchronous errors and rejected promises, 
 //by providing next as the final catch handler and Express will catch errors, because the catch handler is given the error as the first argument
 module.exports = fn => {
-    return (req, res, next) = fn(req, res, next).catch(err);
+    return (req, res, next) => {
+        fn(req, res, next).catch(next);
+    };
 };

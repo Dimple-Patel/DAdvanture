@@ -48,7 +48,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
 
     const url = `${req.protocol}://${req.get('host')}/me`;
     console.log(url);
-    await new Email(newUser, url).sendWelcome();
+    //await new Email(newUser, url).sendWelcome();
 
     //create and send new jwt token and user
     createAndSendToken(newUser, 201, res);
@@ -66,7 +66,7 @@ exports.login = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ email }).select('password');
 
     //if user not exist or password is incorrect,send error
-    if (!user || !(await User.correctPassword(password, user.password))) {
+    if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError('Incorrect email or password',401));
     }
 
@@ -78,9 +78,11 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.logout = (req, res) => {
     //set jwt cookie valu to 'loggedOut' 
     res.cookie('jwt', 'loggedOut', {
-        expires: new Date(Date.now() * 10 * 1000),
+        expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true
     });
+
+    res.status(200).json({ status: 'success' });
 };
 
 //middleware to provide protected data acess
@@ -112,7 +114,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     //4) check if password change after token was issued
-    if (currentUser.changedPasswordAfter(decodedTokenData.iat)) {
+    if (currentUser.passwordChangedAfter(decodedTokenData.iat)) {
         return next(new AppError('User recently changed password please login again', 401));
     }
 
@@ -132,10 +134,10 @@ exports.restrictTo = (...roles) => {
             return next(new AppError('You do not have permission to access data', 403));
         }
         next();
-    }
+    };
 };
 
-exports.forgoPassword = catchAsync(async (req, res, next) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
     //1) get user for provided email
     const user = await User.findOne({ email: req.body.email });
 
@@ -223,12 +225,12 @@ exports.isLoggedIn = async (req, res, next) => {
             }
 
             //3) Check if user changed password after the token was issued
-            if (currentUser.changedPasswordAfter(decodedTokenData.iat)) {
+            if (currentUser.passwordChangedAfter(decodedTokenData.iat)) {
                 return next();
             }
 
             res.locals.user = currentUser;
-            next();
+            return next();
         }
         catch (err) {
             return next();

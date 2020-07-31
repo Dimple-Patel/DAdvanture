@@ -48,6 +48,13 @@ exports.resizeTripImages = catchAsync(async (req, res, next) => {
     next();
 });
 
+//CRUD operation
+exports.getAllTrips = factory.getAll(Trip);
+exports.createTrip = factory.createOne(Trip);
+exports.getTrip = factory.getOne(Trip, { path: 'reviews' });
+exports.updateTrip = factory.updateOne(Trip);
+exports.deleteTrip = factory.deleteOne(Trip);
+
 //middleware to get highest rated top 5 trips
 //this function prepare querystring by setting req.query and pass it to next middleware getAll
 //which return required result
@@ -74,9 +81,9 @@ exports.getTripStats = catchAsync(async (req, res, next) => {
                 numOfTrip: { $sum: 1 },//count total no. of trip in each group
                 numOfRatings: { $sum: '$totalRating' },//count total no. of rating for a group
                 avgRatings: { $avg: '$ratingsAverage' },//calculate average rating per group
-                avgPrice: { $avg: 'price' },//calculate average price per group
-                minPrice: { $min: 'price' },//find minimum price
-                maxPrice: { $max: 'price' }//find maximum price
+                avgPrice: { $avg: '$price' },//calculate average price per group
+                minPrice: { $min: '$price' },//find minimum price
+                maxPrice: { $max: '$price' }//find maximum price
             }
         },
         {//sort result based on average price
@@ -86,6 +93,12 @@ exports.getTripStats = catchAsync(async (req, res, next) => {
             $match: { _id: { $ne: 'EASY' } }
         }
     ]);
+    res.status(200).json({
+        status: 'success',
+        data: {
+            stats
+        }
+    });
 });
 
 //Example of unwinding and projecting
@@ -122,7 +135,7 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
             $sort: { noOfTripStarts:-1}
         },
         {//display total 12 record in result
-            limit:12
+            $limit:12
         }
     ]);
 
@@ -186,8 +199,3 @@ exports.getDistances = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getAllTrips = factory.getAll(Trip);
-exports.createTrip = factory.createOne(Trip);
-exports.getTrip = factory.getOne(Trip, {path:'reviews'});
-exports.updateTrip = factory.updateOne(Trip);
-exports.deleteTrip = factory.deleteOne(Trip);

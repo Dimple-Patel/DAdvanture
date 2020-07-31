@@ -14,7 +14,7 @@ router.route('/')
         reviewController.setTripUserIds,
         reviewController.createReview);
 
-router.route(':id')
+router.route('/:id')
     .get(reviewController.getReview)
     .patch(authController.restrictTo('admin', 'user'),
            reviewController.updateReview)

@@ -21,8 +21,9 @@ exports.getAll = model =>
         //execute query
         const docs = await features.query;
         //generate error if record not found
-        if (!docs)
+        if (!docs) {
             return next(new AppError('Records not found', 400));
+        }
         //store result into response
         res.status(200).json({
             status: 'success',
@@ -46,7 +47,7 @@ exports.getOne = (model,popOptions) =>
         const doc = await query;
         //generate error if no record found with that id
         if (!doc) {
-            return next(new AppError('No document found with that id',404));
+            return next(new AppError('No document found with that id', 404));
         }
         //no error,store result into response
         res.status(200).json({
@@ -78,12 +79,12 @@ exports.updateOne = model =>
         //find document with given id and update values with provided by req.body
         const doc = await model.findByIdAndUpdate(req.params.id, req.body, {
             new: true, // gives object after update was applied
-            runValidator: true //run update validators to validate update operation against model's schema
+            runValidators: true //run update validators to validate update operation against model's schema
         });
 
         //generate error if no record found with given id
         if (!doc) {
-            return next(new AppError('No document found with that id',404));
+            return next(new AppError('No document found with that id', 404));
         }
         //no error, store updated document in response
         res.status(200).json({
@@ -97,13 +98,13 @@ exports.updateOne = model =>
 //general function to delete document from collection
 exports.deleteOne = model =>
     catchAsync(async (req, res, next) => {
-        const doc = await model.findByIDAndDelete(req.params.id);
+        const doc = await model.findByIdAndDelete(req.params.id);
 
         if (!doc) {
-            return next(new AppError('No document found eith that id',404));
+            return next(new AppError('No document foundweith that id',404));
         }
 
-        res.status(200).json({
+        res.status(204).json({
             status: 'success',
             data: null
         });

@@ -15,12 +15,14 @@ const reviewSchema = new mongoose.Schema({
         default: Date.now()
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'User'
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Review must belong to a user']
     },
     trip: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'Trip'
+        type: mongoose.Schema.ObjectId,
+        ref: 'Trip',
+        required:[true,'Review must have trip']
     }
 }, {
         toJSON: { virtuals: true },
@@ -78,7 +80,9 @@ reviewSchema.post('save', function () {
 //but update and delete will happen using findByIdAndDelete or findByIdAndUpdate method so we need to 
 //callmethod from query middleware instead of document middleware
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-    this.r = await findOne();
+    //to call calcRatingAverage we need Review document but this is query middleware so to access
+    //it call findOne which return review document and store it in current object
+    this.r =await this.findOne();
     next();
 });
 reviewSchema.post(/^findOneAnd/, async function () {

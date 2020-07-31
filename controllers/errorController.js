@@ -11,8 +11,8 @@ const sendDevlopmentError = (err,req, res) => {
         });
     }
 
-    //B) Rendered Website
-    console.log('ERROR', err);
+    //B)Rendered website
+    console.error('ERROR', err);
     return res.status(err.statusCode).render('error', {
         title: 'Something went wrong!',
         msg: err.message
@@ -52,7 +52,7 @@ const sendProductionError = (err, req, res) => {
 
     //2)programming or unknown errors:don't leak error detail
     //Log error
-    console.error('error', err);
+    console.error('Error', err);
     //send generic message to client
     return res.status(err.statusCode).render('error', {
         title: 'Something went wrong!',
@@ -83,6 +83,7 @@ const handleJWTExpiredError = () => {
     return new AppError('Your token has expired! Please log in again.', 401);
 }
 
+//any error occur in express code will come to this handler function
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
@@ -96,8 +97,8 @@ module.exports = (err, req, res, next) => {
         if (err.name === 'CastError') error = handleCastError(error);
         if (err.code === 11000) error = handleDuplicateFieldsDB(error);
         if (err.name === 'ValidationError') error = handleValidationError(error);
-        if (err.name === 'JsonWebTokenError') error = handleJWTError(error);
-        if (err.name === 'TokenExpiredError') error = handleJWTExpiredError(error);
-        sendProductionError(error,req.res);
+        if (err.name === 'JsonWebTokenError') error = handleJWTError();
+        if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
+        sendProductionError(error,req,res);
     }
 };
